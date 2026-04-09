@@ -1,0 +1,1 @@
+"""CV project baseline package."""

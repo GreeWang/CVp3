@@ -1,0 +1,86 @@
+input:
+  video_path: null
+  frames_dir: data/raw/bmx-trees/frames
+  image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
+  max_long_side: 960
+
+output:
+  dataset_name: bmx-trees
+  root_dir: results/part3
+  save_fps: null
+  frame_name_width: 6
+
+segmentation:
+  model_name: yolov8n-seg.pt
+  device: cuda:0
+  confidence_threshold: 0.3
+  iou_threshold: 0.5
+  dynamic_classes:
+    - person
+    - bicycle
+    - motorcycle
+    - car
+    - bus
+    - truck
+  refinement_backend: grabcut
+  grabcut_iterations: 2
+  bbox_padding_ratio: 0.08
+  min_refined_area_ratio: 0.4
+
+motion:
+  max_corners: 120
+  quality_level: 0.01
+  min_distance: 5
+  block_size: 7
+  lk_win_size: 21
+  lk_max_level: 3
+  lk_max_iterations: 30
+  lk_epsilon: 0.01
+  min_valid_points: 8
+  displacement_threshold: 2.0
+  persistence_window: 5
+  persistence_votes: 2
+  persistence_iou_threshold: 0.2
+
+mask_postprocess:
+  fill_holes: true
+  min_component_area_ratio: 0.0004
+  dilation_kernel_size: 7
+  temporal_smoothing: true
+  temporal_window: 5
+  temporal_votes: 3
+  close_kernel_size: 9
+  open_kernel_size: 3
+  final_dilation_kernel_size: 5
+  flow_guided_consistency: true
+  flow_consistency_current_weight: 2
+  flow_consistency_threshold: 2
+
+inpainting:
+  temporal_radius: 4
+  min_temporal_neighbors: 2
+  fallback_method: telea
+  inpaint_radius: 3
+  hard_region_support_ratio: 0.55
+  hard_region_dilation: 11
+
+diffusion:
+  hard_ratio_threshold: 0.01
+  min_keyframe_gap: 6
+  max_keyframes: 12
+  mask_expand_kernel: 17
+  inpaint_radius: 5
+  edge_sigma_s: 40
+  edge_sigma_r: 0.25
+  detail_sigma_s: 10
+  detail_sigma_r: 0.15
+  feather_sigma: 5.0
+  propagation_radius: 3
+  propagation_blend: 0.45
+
+visualization:
+  save_report_frames: 8
+  report_frame_indices: []
+  panel_font_scale: 0.6
+  panel_font_thickness: 1
+  mask_alpha: 0.45
