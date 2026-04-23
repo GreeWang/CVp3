@@ -52,4 +52,9 @@ sam2/
 *.tar.gz
 *.7z
 
-# Keep report and source files at repo root by default
+# User-requested local-only documents/reports
+p3.tex
+report_architecture.tex
+report_part3_final.tex
+report_zh.md
+Part 3 代码落地计划书：SAM2 掩码生成 + ProPainter 时序补充 + Diffusion 增强.pdf
