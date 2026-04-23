@@ -1,15 +1,17 @@
 input:
   video_path: null
   frames_dir: ProPainter/inputs/object_removal/bmx-trees
-  image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
+  image_extensions:
+  - .png
+  - .jpg
+  - .jpeg
+  - .bmp
   max_long_side: 960
-
 output:
   dataset_name: bmx-trees
   root_dir: results/part3
   save_fps: null
   frame_name_width: 6
-
 segmentation:
   model_name: yolov8n-seg.pt
   device: cuda:0
@@ -20,18 +22,17 @@ segmentation:
   sam2_use_autocast: true
   sam2_vos_optimized: false
   prompt_frame_idx: 0
-  max_initial_objects: 6
-  min_mask_area_ratio: 0.00001
+  max_initial_objects: 10
+  min_mask_area_ratio: 1.0e-05
   confidence_threshold: 0.2
   iou_threshold: 0.5
   dynamic_classes:
-    - person
-    - bicycle
+  - person
+  - bicycle
   refinement_backend: grabcut
   grabcut_iterations: 2
   bbox_padding_ratio: 0.08
   min_refined_area_ratio: 0.4
-
 motion:
   max_corners: 120
   quality_level: 0.01
@@ -46,10 +47,9 @@ motion:
   persistence_window: 3
   persistence_votes: 1
   persistence_iou_threshold: 0.1
-
 mask_postprocess:
   fill_holes: true
-  min_component_area_ratio: 0.00005
+  min_component_area_ratio: 5.0e-05
   dilation_kernel_size: 17
   temporal_smoothing: true
   temporal_window: 3
@@ -60,7 +60,6 @@ mask_postprocess:
   flow_guided_consistency: false
   flow_consistency_current_weight: 2
   flow_consistency_threshold: 2
-
 inpainting:
   propainter_repo_dir: ProPainter
   temporal_radius: 4
@@ -84,7 +83,7 @@ inpainting:
   weak_support_motion_weight: 0.1
   weak_support_gap_weight: 0.08
   hard_region_min_area_ratio: 0.0002
-  hard_region_dilation: 5
+  hard_region_dilation: 4
   borrow_temporal_radius: 4
   borrow_min_neighbors: 2
   borrow_use_direct_coordinates: true
@@ -94,27 +93,32 @@ inpainting:
   diffusion_target_min_area_ratio: 0.0002
   diffusion_target_open_kernel: 0
   diffusion_target_close_kernel: 5
-  diffusion_target_dilation: 3
+  diffusion_target_dilation: 2
   diffusion_confidence_gating: true
-  diffusion_gate_support_threshold: 0.5
-  diffusion_gate_color_l1_threshold: 22.0
+  diffusion_gate_support_threshold: 0.65
+  diffusion_gate_color_l1_threshold: 17.0
   diffusion_target_adaptive_dilation: true
   diffusion_target_small_ratio: 0.0015
   diffusion_target_large_ratio: 0.01
-
+  diffusion_target_max_candidate_ratio: 0.35
+  diffusion_target_min_pixels: 600
+  diffusion_target_color_scale: 28.0
+  diffusion_target_color_weight: 0.45
 diffusion:
   method: freeinpaint
-  freeinpaint_repo_dir: "FreeInpaint-main"
-  model_id: "checkpoints/sdxl-inpainting-0.1-modelscope"
-  modelscope_model_id: "AI-ModelScope/stable-diffusion-xl-1.0-inpainting-0.1"
-  device: "cuda:0"
-  dtype: "float16"
-  variant: "fp16"
-  prompt: "clean natural background, realistic texture, consistent with surrounding scene, no object, seamless background"
-  negative_prompt: "object, person, artifact, blurry, distorted, duplicated, text, watermark"
+  freeinpaint_repo_dir: FreeInpaint-main
+  model_id: checkpoints/sdxl-inpainting-0.1-modelscope
+  modelscope_model_id: AI-ModelScope/stable-diffusion-xl-1.0-inpainting-0.1
+  device: cuda:0
+  dtype: float16
+  variant: fp16
+  prompt: clean natural background, realistic texture, consistent with surrounding
+    scene, no object, seamless background
+  negative_prompt: object, person, camera, phone, artifact, blurry, distorted, duplicated,
+    text, watermark
   num_inference_steps: 30
-  guidance_scale: 7.0
-  strength: 0.99
+  guidance_scale: 5.0
+  strength: 0.88
   use_roi_crop: true
   roi_padding: 48
   min_hard_area_ratio: 0.002
@@ -124,13 +128,13 @@ diffusion:
   enable_attention_slicing: true
   enable_vae_slicing: true
   hard_ratio_threshold: 0.002
-  min_keyframe_gap: 10
-  max_keyframes: 8
+  min_keyframe_gap: 12
+  max_keyframes: 6
   enable_keyframe_cluster_refine: true
   keyframe_cluster_radius: 1
   keyframe_cluster_min_gap: 3
-  mask_expand_kernel: 25
-  replace_expand_kernel: 7
+  mask_expand_kernel: 17
+  replace_expand_kernel: 5
   preserve_core_kernel: 0
   inpaint_radius: 5
   edge_sigma_s: 18
@@ -138,10 +142,10 @@ diffusion:
   detail_sigma_s: 0
   detail_sigma_r: 0.0
   original_hint_weight: 0.0
-  candidate_mix_weight: 0.55
-  feather_sigma: 3.0
-  propagation_radius: 0
-  propagation_blend: 0.04
+  candidate_mix_weight: 0.4
+  feather_sigma: 1.8
+  propagation_radius: 5
+  propagation_blend: 0.85
   propagation_min_overlap: 0.5
   reward_guidance_scale: 0.0
   overall_reward_scale: 0.0
@@ -153,14 +157,12 @@ diffusion:
   max_round_initno: 3
   attn_res_scale_factor: 32.0
   initno_lr: 0.01
-
 visualization:
   save_report_frames: 8
   report_frame_indices: []
   panel_font_scale: 0.6
   panel_font_thickness: 1
   mask_alpha: 0.45
-
 evaluation:
   gain_risk:
     baseline_eval_json: results/part3/bmx-trees-propainter-only-ab/20260416_174257/independent_eval.json
@@ -169,7 +171,7 @@ evaluation:
     score_gamma: 1.0
     score_delta: 1.0
     tol_outside_change: 0.003
-    tol_seam_change: 0.10
+    tol_seam_change: 0.1
     tol_leakage: 0.0
     tol_temporal_ratio: 1.02
     min_hard_gain: 0.01

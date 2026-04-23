@@ -4,6 +4,13 @@ pyyaml
 tqdm
 matplotlib
 opencv-python
+imageio
 torch
 torchvision
 ultralytics
+diffusers
+transformers
+accelerate
+safetensors
+pillow
+modelscope

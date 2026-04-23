@@ -6,8 +6,10 @@ import numpy as np
 from cv_project.pipeline.types import DetectionRecord
 
 try:
+    import torch
     from ultralytics import YOLO
 except ImportError:  # pragma: no cover
+    torch = None
     YOLO = None
 
 
@@ -16,7 +18,7 @@ class YoloSegmenter:
         if YOLO is None:
             raise ImportError("ultralytics is required to run segmentation. Install dependencies from requirements.txt.")
         self.model = YOLO(model_name)
-        self.device = device
+        self.device = self._resolve_runtime_device(device)
         self.confidence_threshold = confidence_threshold
         self.iou_threshold = iou_threshold
         self.dynamic_classes = set(dynamic_classes)
@@ -60,3 +62,10 @@ class YoloSegmenter:
                 )
             )
         return detections
+
+    @staticmethod
+    def _resolve_runtime_device(device: str) -> str:
+        normalized = str(device or "cpu")
+        if normalized.startswith("cuda") and (torch is None or not torch.cuda.is_available()):
+            return "cpu"
+        return normalized

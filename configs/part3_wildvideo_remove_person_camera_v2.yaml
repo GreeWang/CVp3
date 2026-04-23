@@ -1,11 +1,11 @@
 input:
-  video_path: null
-  frames_dir: ProPainter/inputs/object_removal/bmx-trees
+  video_path: data/raw/wild/wild_video.mp4
+  frames_dir: null
   image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
   max_long_side: 960
 
 output:
-  dataset_name: bmx-trees
+  dataset_name: wildvideo
   root_dir: results/part3
   save_fps: null
   frame_name_width: 6
@@ -20,17 +20,19 @@ segmentation:
   sam2_use_autocast: true
   sam2_vos_optimized: false
   prompt_frame_idx: 0
-  max_initial_objects: 6
-  min_mask_area_ratio: 0.00001
-  confidence_threshold: 0.2
+  max_initial_objects: 14
+  min_mask_area_ratio: 0.000005
+  confidence_threshold: 0.15
   iou_threshold: 0.5
   dynamic_classes:
     - person
-    - bicycle
+    - cell phone
+    - camera
+    - remote
   refinement_backend: grabcut
   grabcut_iterations: 2
-  bbox_padding_ratio: 0.08
-  min_refined_area_ratio: 0.4
+  bbox_padding_ratio: 0.1
+  min_refined_area_ratio: 0.3
 
 motion:
   max_corners: 120
@@ -49,14 +51,14 @@ motion:
 
 mask_postprocess:
   fill_holes: true
-  min_component_area_ratio: 0.00005
-  dilation_kernel_size: 17
+  min_component_area_ratio: 0.00003
+  dilation_kernel_size: 21
   temporal_smoothing: true
   temporal_window: 3
   temporal_votes: 1
-  close_kernel_size: 11
+  close_kernel_size: 13
   open_kernel_size: 0
-  final_dilation_kernel_size: 13
+  final_dilation_kernel_size: 17
   flow_guided_consistency: false
   flow_consistency_current_weight: 2
   flow_consistency_threshold: 2
@@ -67,7 +69,7 @@ inpainting:
   min_temporal_neighbors: 2
   fallback_method: telea
   inpaint_radius: 3
-  mask_dilation: 10
+  mask_dilation: 12
   neighbor_length: 10
   ref_stride: 10
   subvideo_length: 80
@@ -76,30 +78,30 @@ inpainting:
   height: -1
   width: -1
   include_weak_support_regions: true
-  weak_support_threshold: 0.25
+  weak_support_threshold: 0.22
   adaptive_weak_support_threshold: true
-  weak_support_threshold_min: 0.12
+  weak_support_threshold_min: 0.1
   weak_support_threshold_max: 0.6
   weak_support_texture_weight: 0.1
   weak_support_motion_weight: 0.1
   weak_support_gap_weight: 0.08
-  hard_region_min_area_ratio: 0.0002
-  hard_region_dilation: 5
+  hard_region_min_area_ratio: 0.00015
+  hard_region_dilation: 6
   borrow_temporal_radius: 4
   borrow_min_neighbors: 2
   borrow_use_direct_coordinates: true
   borrow_color_l1_threshold: 28.0
   borrow_require_mean_color: false
   borrowable_erode_kernel: 3
-  diffusion_target_min_area_ratio: 0.0002
+  diffusion_target_min_area_ratio: 0.00015
   diffusion_target_open_kernel: 0
-  diffusion_target_close_kernel: 5
+  diffusion_target_close_kernel: 7
   diffusion_target_dilation: 3
   diffusion_confidence_gating: true
-  diffusion_gate_support_threshold: 0.5
-  diffusion_gate_color_l1_threshold: 22.0
+  diffusion_gate_support_threshold: 0.62
+  diffusion_gate_color_l1_threshold: 18.0
   diffusion_target_adaptive_dilation: true
-  diffusion_target_small_ratio: 0.0015
+  diffusion_target_small_ratio: 0.0012
   diffusion_target_large_ratio: 0.01
 
 diffusion:
@@ -111,25 +113,25 @@ diffusion:
   dtype: "float16"
   variant: "fp16"
   prompt: "clean natural background, realistic texture, consistent with surrounding scene, no object, seamless background"
-  negative_prompt: "object, person, artifact, blurry, distorted, duplicated, text, watermark"
+  negative_prompt: "object, person, camera, phone, remote, artifact, blurry, distorted, duplicated, text, watermark"
   num_inference_steps: 30
-  guidance_scale: 7.0
-  strength: 0.99
+  guidance_scale: 5.2
+  strength: 0.9
   use_roi_crop: true
-  roi_padding: 48
-  min_hard_area_ratio: 0.002
+  roi_padding: 56
+  min_hard_area_ratio: 0.0015
   max_side: 1024
   size_multiple: 8
-  feather_radius: 11
+  feather_radius: 13
   enable_attention_slicing: true
   enable_vae_slicing: true
-  hard_ratio_threshold: 0.002
+  hard_ratio_threshold: 0.0015
   min_keyframe_gap: 10
   max_keyframes: 8
   enable_keyframe_cluster_refine: true
   keyframe_cluster_radius: 1
   keyframe_cluster_min_gap: 3
-  mask_expand_kernel: 25
+  mask_expand_kernel: 21
   replace_expand_kernel: 7
   preserve_core_kernel: 0
   inpaint_radius: 5
@@ -138,10 +140,10 @@ diffusion:
   detail_sigma_s: 0
   detail_sigma_r: 0.0
   original_hint_weight: 0.0
-  candidate_mix_weight: 0.55
-  feather_sigma: 3.0
+  candidate_mix_weight: 0.45
+  feather_sigma: 2.0
   propagation_radius: 0
-  propagation_blend: 0.04
+  propagation_blend: 0.02
   propagation_min_overlap: 0.5
   reward_guidance_scale: 0.0
   overall_reward_scale: 0.0

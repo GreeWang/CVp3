@@ -1,11 +1,11 @@
 input:
-  video_path: null
-  frames_dir: ProPainter/inputs/object_removal/bmx-trees
+  video_path: data/raw/wild/wild_video.mp4
+  frames_dir: null
   image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
   max_long_side: 960
 
 output:
-  dataset_name: bmx-trees
+  dataset_name: wildvideo
   root_dir: results/part3
   save_fps: null
   frame_name_width: 6
@@ -20,13 +20,14 @@ segmentation:
   sam2_use_autocast: true
   sam2_vos_optimized: false
   prompt_frame_idx: 0
-  max_initial_objects: 6
+  max_initial_objects: 10
   min_mask_area_ratio: 0.00001
   confidence_threshold: 0.2
   iou_threshold: 0.5
   dynamic_classes:
     - person
-    - bicycle
+    - cell phone
+    - camera
   refinement_backend: grabcut
   grabcut_iterations: 2
   bbox_padding_ratio: 0.08
@@ -84,7 +85,7 @@ inpainting:
   weak_support_motion_weight: 0.1
   weak_support_gap_weight: 0.08
   hard_region_min_area_ratio: 0.0002
-  hard_region_dilation: 5
+  hard_region_dilation: 4
   borrow_temporal_radius: 4
   borrow_min_neighbors: 2
   borrow_use_direct_coordinates: true
@@ -93,14 +94,24 @@ inpainting:
   borrowable_erode_kernel: 3
   diffusion_target_min_area_ratio: 0.0002
   diffusion_target_open_kernel: 0
-  diffusion_target_close_kernel: 5
+  diffusion_target_close_kernel: 7
   diffusion_target_dilation: 3
   diffusion_confidence_gating: true
-  diffusion_gate_support_threshold: 0.5
-  diffusion_gate_color_l1_threshold: 22.0
+  diffusion_gate_support_threshold: 0.65
+  diffusion_gate_color_l1_threshold: 17.0
   diffusion_target_adaptive_dilation: true
   diffusion_target_small_ratio: 0.0015
   diffusion_target_large_ratio: 0.01
+  diffusion_target_max_candidate_ratio: 0.35
+  diffusion_target_min_pixels: 600
+  diffusion_target_color_scale: 28.0
+  diffusion_target_color_weight: 0.45
+  enable_edge_convolution_balance: true
+  edge_band_width: 6
+  edge_smooth_kernel: 5
+  edge_sigma_color: 12.0
+  edge_sigma_space: 18.0
+  edge_blend_alpha: 0.5
 
 diffusion:
   method: freeinpaint
@@ -111,26 +122,26 @@ diffusion:
   dtype: "float16"
   variant: "fp16"
   prompt: "clean natural background, realistic texture, consistent with surrounding scene, no object, seamless background"
-  negative_prompt: "object, person, artifact, blurry, distorted, duplicated, text, watermark"
+  negative_prompt: "object, person, camera, phone, artifact, blurry, distorted, duplicated, text, watermark"
   num_inference_steps: 30
-  guidance_scale: 7.0
-  strength: 0.99
+  guidance_scale: 5.0
+  strength: 0.88
   use_roi_crop: true
   roi_padding: 48
   min_hard_area_ratio: 0.002
   max_side: 1024
   size_multiple: 8
-  feather_radius: 11
+  feather_radius: 13
   enable_attention_slicing: true
   enable_vae_slicing: true
   hard_ratio_threshold: 0.002
-  min_keyframe_gap: 10
-  max_keyframes: 8
+  min_keyframe_gap: 12
+  max_keyframes: 6
   enable_keyframe_cluster_refine: true
   keyframe_cluster_radius: 1
   keyframe_cluster_min_gap: 3
-  mask_expand_kernel: 25
-  replace_expand_kernel: 7
+  mask_expand_kernel: 19
+  replace_expand_kernel: 5
   preserve_core_kernel: 0
   inpaint_radius: 5
   edge_sigma_s: 18
@@ -138,10 +149,10 @@ diffusion:
   detail_sigma_s: 0
   detail_sigma_r: 0.0
   original_hint_weight: 0.0
-  candidate_mix_weight: 0.55
-  feather_sigma: 3.0
+  candidate_mix_weight: 0.32
+  feather_sigma: 2.2
   propagation_radius: 0
-  propagation_blend: 0.04
+  propagation_blend: 0.02
   propagation_min_overlap: 0.5
   reward_guidance_scale: 0.0
   overall_reward_scale: 0.0

@@ -1,6 +1,6 @@
 input:
   video_path: null
-  frames_dir: ProPainter/inputs/object_removal/bmx-trees
+  frames_dir: data/raw/bmx-trees
   image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
   max_long_side: 960
 
@@ -84,7 +84,7 @@ inpainting:
   weak_support_motion_weight: 0.1
   weak_support_gap_weight: 0.08
   hard_region_min_area_ratio: 0.0002
-  hard_region_dilation: 5
+  hard_region_dilation: 4
   borrow_temporal_radius: 4
   borrow_min_neighbors: 2
   borrow_use_direct_coordinates: true
@@ -94,10 +94,10 @@ inpainting:
   diffusion_target_min_area_ratio: 0.0002
   diffusion_target_open_kernel: 0
   diffusion_target_close_kernel: 5
-  diffusion_target_dilation: 3
+  diffusion_target_dilation: 2
   diffusion_confidence_gating: true
-  diffusion_gate_support_threshold: 0.5
-  diffusion_gate_color_l1_threshold: 22.0
+  diffusion_gate_support_threshold: 0.65
+  diffusion_gate_color_l1_threshold: 17.0
   diffusion_target_adaptive_dilation: true
   diffusion_target_small_ratio: 0.0015
   diffusion_target_large_ratio: 0.01
@@ -113,8 +113,8 @@ diffusion:
   prompt: "clean natural background, realistic texture, consistent with surrounding scene, no object, seamless background"
   negative_prompt: "object, person, artifact, blurry, distorted, duplicated, text, watermark"
   num_inference_steps: 30
-  guidance_scale: 7.0
-  strength: 0.99
+  guidance_scale: 5.0
+  strength: 0.88
   use_roi_crop: true
   roi_padding: 48
   min_hard_area_ratio: 0.002
@@ -124,13 +124,13 @@ diffusion:
   enable_attention_slicing: true
   enable_vae_slicing: true
   hard_ratio_threshold: 0.002
-  min_keyframe_gap: 10
-  max_keyframes: 8
+  min_keyframe_gap: 12
+  max_keyframes: 6
   enable_keyframe_cluster_refine: true
   keyframe_cluster_radius: 1
   keyframe_cluster_min_gap: 3
-  mask_expand_kernel: 25
-  replace_expand_kernel: 7
+  mask_expand_kernel: 17
+  replace_expand_kernel: 5
   preserve_core_kernel: 0
   inpaint_radius: 5
   edge_sigma_s: 18
@@ -138,10 +138,10 @@ diffusion:
   detail_sigma_s: 0
   detail_sigma_r: 0.0
   original_hint_weight: 0.0
-  candidate_mix_weight: 0.55
-  feather_sigma: 3.0
+  candidate_mix_weight: 0.4
+  feather_sigma: 1.8
   propagation_radius: 0
-  propagation_blend: 0.04
+  propagation_blend: 0.02
   propagation_min_overlap: 0.5
   reward_guidance_scale: 0.0
   overall_reward_scale: 0.0

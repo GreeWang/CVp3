@@ -1,1 +1,1 @@
-"""Evaluation helpers for masks and restored videos."""
+"""Evaluation helpers for masks, restored videos, and run-level diagnostics."""

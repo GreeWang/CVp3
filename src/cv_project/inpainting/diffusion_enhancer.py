@@ -53,15 +53,21 @@ class DiffusionLikeEnhancer:
         if not np.any(hard_mask > 0):
             return restored_frame.copy()
 
-        kernel_size = int(self.config.get("mask_expand_kernel", 17))
-        expanded_mask = cv2.dilate(
+        context_kernel = int(self.config.get("mask_expand_kernel", 17))
+        context_mask = cv2.dilate(
             hard_mask.astype(np.uint8),
-            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_size, kernel_size)),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (context_kernel, context_kernel)),
+            iterations=1,
+        )
+        replace_kernel = int(self.config.get("replace_expand_kernel", 5))
+        replace_mask = cv2.dilate(
+            hard_mask.astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (replace_kernel, replace_kernel)),
             iterations=1,
         )
         candidate = cv2.inpaint(
             restored_frame,
-            expanded_mask,
+            context_mask,
             int(self.config.get("inpaint_radius", 5)),
             cv2.INPAINT_TELEA,
         )
@@ -80,7 +86,7 @@ class DiffusionLikeEnhancer:
         original_hint = cv2.GaussianBlur(original_frame, (0, 0), sigmaX=1.0)
         candidate = cv2.addWeighted(candidate, 0.85, original_hint, 0.15, 0.0)
         feather = cv2.GaussianBlur(
-            (expanded_mask > 0).astype(np.float32),
+            (replace_mask > 0).astype(np.float32),
             (0, 0),
             sigmaX=float(self.config.get("feather_sigma", 5.0)),
         )
@@ -120,28 +126,15 @@ class DiffusionLikeEnhancer:
                 current[valid] = current[valid] * (1.0 - blend) + candidate[valid] * blend
                 enhanced_frames[target_index] = np.clip(current, 0, 255).astype(np.uint8)
 
-    @staticmethod
     def _warp_tensor_to_target(
+        self,
         source_frame: np.ndarray,
         target_frame: np.ndarray,
         source_tensor: np.ndarray,
         source_mask: np.ndarray,
     ) -> tuple[np.ndarray, np.ndarray]:
-        target_gray = cv2.cvtColor(target_frame, cv2.COLOR_BGR2GRAY)
-        source_gray = cv2.cvtColor(source_frame, cv2.COLOR_BGR2GRAY)
-        flow = cv2.calcOpticalFlowFarneback(
-            target_gray,
-            source_gray,
-            None,
-            pyr_scale=0.5,
-            levels=3,
-            winsize=21,
-            iterations=3,
-            poly_n=5,
-            poly_sigma=1.2,
-            flags=0,
-        )
-        height, width = target_gray.shape
+        flow = self._compute_flow(source_frame, target_frame)
+        height, width = flow.shape[:2]
         grid_x, grid_y = np.meshgrid(np.arange(width, dtype=np.float32), np.arange(height, dtype=np.float32))
         map_x = grid_x + flow[..., 0]
         map_y = grid_y + flow[..., 1]
@@ -161,3 +154,85 @@ class DiffusionLikeEnhancer:
             borderValue=0,
         )
         return warped_tensor, warped_mask
+
+    def _lazy_load_raft(self):
+        if hasattr(self, "_raft_model"):
+            return self._raft_model, getattr(self, "_raft_device", "cpu")
+
+        import sys
+        import os
+        import torch
+
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        propainter_dir = self.config.get("propainter_repo_dir", "ProPainter")
+        raft_dir = os.path.join(project_root, propainter_dir)
+
+        if raft_dir not in sys.path:
+            sys.path.insert(0, raft_dir)
+
+        try:
+            from model.modules.flow_comp_raft import initialize_RAFT
+            device = "cuda:0" if torch.cuda.is_available() else "cpu"
+            model_path = os.path.join(raft_dir, "weights", "raft-things.pth")
+
+            raft_model = initialize_RAFT(model_path, device=device)
+            raft_model.eval()
+            self._raft_model = raft_model
+            self._raft_device = device
+            return raft_model, device
+        except Exception as e:
+            print(f"Failed to load RAFT: {e}")
+            self._raft_model = None
+            self._raft_device = None
+            return None, None
+
+    def _compute_flow(self, source_frame: np.ndarray, target_frame: np.ndarray) -> np.ndarray:
+        raft_model, device = None, None
+        if raft_model is not None:
+            import torch
+            import cv2
+            
+            t_rgb = cv2.cvtColor(target_frame, cv2.COLOR_BGR2RGB)
+            s_rgb = cv2.cvtColor(source_frame, cv2.COLOR_BGR2RGB)
+
+            h, w = t_rgb.shape[:2]
+            pad_h = (8 - h % 8) % 8
+            pad_w = (8 - w % 8) % 8
+
+            if pad_h > 0 or pad_w > 0:
+                t_rgb = cv2.copyMakeBorder(t_rgb, 0, pad_h, 0, pad_w, cv2.BORDER_REPLICATE)
+                s_rgb = cv2.copyMakeBorder(s_rgb, 0, pad_h, 0, pad_w, cv2.BORDER_REPLICATE)
+
+            t_tensor = (torch.from_numpy(t_rgb).permute(2, 0, 1).float() / 255.0) * 2.0 - 1.0
+            s_tensor = (torch.from_numpy(s_rgb).permute(2, 0, 1).float() / 255.0) * 2.0 - 1.0
+
+            t_tensor = t_tensor.unsqueeze(0).to(device)
+            s_tensor = s_tensor.unsqueeze(0).to(device)
+
+            with torch.no_grad():
+                # target->source backward logic: feed target as image1, source as image2
+                _, flows_forward = raft_model(t_tensor, s_tensor, iters=20, test_mode=True)
+
+            flow_np = flows_forward[0].permute(1, 2, 0).cpu().numpy()
+            
+            if pad_h > 0 or pad_w > 0:
+                flow_np = flow_np[:h, :w, :]
+                
+            return flow_np
+        else:
+            # Fallback
+            import cv2
+            target_gray = cv2.cvtColor(target_frame, cv2.COLOR_BGR2GRAY)
+            source_gray = cv2.cvtColor(source_frame, cv2.COLOR_BGR2GRAY)
+            return cv2.calcOpticalFlowFarneback(
+                target_gray,
+                source_gray,
+                None,
+                pyr_scale=0.5,
+                levels=3,
+                winsize=21,
+                iterations=3,
+                poly_n=5,
+                poly_sigma=1.2,
+                flags=0,
+            )

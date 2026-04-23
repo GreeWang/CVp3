@@ -1,0 +1,55 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python cache / build
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+
+# Local agent/runtime artifacts
+.codex
+.codex/
+
+# Large data and generated outputs
+data/
+results/
+checkpoints/
+
+# Model files
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Local cloned third-party repositories (install separately)
+ProPainter/
+FreeInpaint-main/
+sam2/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Archives / binaries
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Keep report and source files at repo root by default
