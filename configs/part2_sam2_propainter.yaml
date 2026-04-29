@@ -1,0 +1,61 @@
+input:
+  video_path: null
+  frames_dir: ProPainter/inputs/object_removal/bmx-trees
+  image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
+  max_long_side: 960
+
+output:
+  dataset_name: bmx-trees-part2
+  root_dir: results/part2
+  save_fps: null
+  frame_name_width: 6
+
+segmentation:
+  model_name: yolov8n-seg.pt
+  device: cuda:0
+  sam2_device: cuda:0
+  sam2_repo_dir: sam2
+  sam2_model_cfg: configs/sam2.1/sam2.1_hiera_l.yaml
+  sam2_checkpoint: checkpoints/sam2.1_hiera_large.pt
+  sam2_use_autocast: true
+  sam2_vos_optimized: false
+  prompt_frame_idx: 0
+  max_initial_objects: 6
+  min_mask_area_ratio: 0.00001
+  confidence_threshold: 0.2
+  iou_threshold: 0.5
+  dynamic_classes:
+    - person
+    - bicycle
+  refinement_backend: grabcut
+  grabcut_iterations: 2
+  bbox_padding_ratio: 0.08
+  min_refined_area_ratio: 0.4
+
+motion:
+  max_corners: 120
+  quality_level: 0.01
+  min_distance: 5
+  block_size: 7
+  persistence_window: 3
+
+mask_postprocess:
+  fill_holes: true
+  dilation_kernel_size: 17
+
+inpainting:
+  propainter_repo_dir: ProPainter
+  temporal_radius: 4
+  min_temporal_neighbors: 2
+  fallback_method: telea
+  inpaint_radius: 3
+  mask_dilation: 10
+  neighbor_length: 10
+  ref_stride: 10
+  subvideo_length: 80
+  raft_iter: 20
+  fp16: false
+
+visualization:
+  save_report_frames: 8
+  mask_alpha: 0.45

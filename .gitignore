@@ -38,10 +38,10 @@ checkpoints/
 *.ckpt
 *.safetensors
 
-# Local cloned third-party repositories (install separately)
-ProPainter/
-FreeInpaint-main/
-sam2/
+# Local cloned third-party repositories
+# ProPainter/ (Uncommented: Uploading as codebase per requirement for p1/p2/p3 reproducing)
+# FreeInpaint-main/
+# sam2/
 
 # Notebook checkpoints
 .ipynb_checkpoints/
@@ -58,3 +58,20 @@ report_architecture.tex
 report_part3_final.tex
 report_zh.md
 Part 3 代码落地计划书：SAM2 掩码生成 + ProPainter 时序补充 + Diffusion 增强.pdf
+# Third-party repo media/demos to avoid large commits
+*.mp4
+*.avi
+*.mkv
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# EXCEPT the src files we need might have .png? 
+!src/**/*.png
+!scripts/**/*.png
+
+# Other user docs
+*.pdf
+*.docx

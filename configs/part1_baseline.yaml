@@ -1,0 +1,45 @@
+input:
+  video_path: null
+  frames_dir: ProPainter/inputs/object_removal/bmx-trees
+  image_extensions: [".png", ".jpg", ".jpeg", ".bmp"]
+  max_long_side: 960
+
+output:
+  dataset_name: bmx-trees-part1
+  root_dir: results/part1
+  save_fps: null
+  frame_name_width: 6
+
+segmentation:
+  model_name: yolov8n-seg.pt
+  device: cuda:0
+  sam2_device: cuda:0
+  sam2_repo_dir: "invalid_sam2_dir_to_force_fallback"  # Forces YOLO fallback
+  confidence_threshold: 0.2
+  iou_threshold: 0.5
+  dynamic_classes:
+    - person
+    - bicycle
+
+motion:
+  max_corners: 120
+  quality_level: 0.01
+  min_distance: 5
+  block_size: 7
+  lk_win_size: 21
+  lk_max_level: 3
+  lk_max_iterations: 30
+
+mask_postprocess:
+  fill_holes: true
+  dilation_kernel_size: 17
+
+inpainting:
+  propainter_repo_dir: "invalid_propainter_dir_to_force_fallback" # Forces Telea fallback
+  fallback_method: telea
+  inpaint_radius: 3
+  mask_dilation: 10
+
+visualization:
+  save_report_frames: 8
+  mask_alpha: 0.45
