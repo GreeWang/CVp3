@@ -19,7 +19,18 @@ pip install -r requirements.txt
 
 ## 3. Core Components / Third-Party Codebases
 
-This repository utilizes three major codebases to advance from a baseline to a state-of-the-art pipeline. The source code for these is included to ensure the full project (`p1`, `p2`, `p3`) is reproducible:
+This repository utilizes three major codebases to advance from a baseline to a state-of-the-art pipeline. You must download/clone the following third-party repositories into the root directory of this project:
+
+```bash
+# Clone SAM2
+git clone https://github.com/facebookresearch/sam2.git
+
+# Clone ProPainter
+git clone https://github.com/sczhou/ProPainter.git
+
+# Clone FreeInpaint
+git clone https://github.com/fallenshock/FreeInpaint.git FreeInpaint-main
+```
 
 1. **YOLOv8 & OpenCV** (Built-in via `ultralytics` and `cv2` for Part 1)
 2. **SAM2** (`sam2/` folder, required for Part 2 and Part 3)

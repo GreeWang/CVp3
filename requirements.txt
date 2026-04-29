@@ -1,16 +1,118 @@
-numpy
-scipy
-pyyaml
-tqdm
-matplotlib
-opencv-python
-imageio
-torch
-torchvision
-ultralytics
-diffusers
-transformers
-accelerate
-safetensors
-pillow
-modelscope
+accelerate==1.13.0
+addict==2.4.0
+anaconda-anon-usage @ file:///croot/anaconda-anon-usage_1710965072196/work
+annotated-doc==0.0.4
+antlr4-python3-runtime==4.9.3
+anyio==4.13.0
+archspec @ file:///croot/archspec_1709217642129/work
+av==17.0.0
+boltons @ file:///work/perseverance-python-buildout/croot/boltons_1698851177130/work
+Brotli @ file:///croot/brotli-split_1714483155106/work
+certifi @ file:///croot/certifi_1725551672989/work/certifi
+cffi @ file:///croot/cffi_1726856441404/work
+charset-normalizer @ file:///croot/charset-normalizer_1721748349566/work
+click==8.3.2
+conda @ file:///croot/conda_1729193882500/work
+conda-content-trust @ file:///croot/conda-content-trust_1714483159009/work
+conda-libmamba-solver @ file:///croot/conda-libmamba-solver_1727775630457/work/src
+conda-package-handling @ file:///croot/conda-package-handling_1718138267740/work
+conda_package_streaming @ file:///croot/conda-package-streaming_1718136078615/work
+contourpy==1.3.3
+cryptography @ file:///croot/cryptography_1724940562255/work
+cycler==0.12.1
+diffusers==0.37.1
+distro @ file:///croot/distro_1714488253808/work
+einops==0.8.2
+filelock==3.16.1
+fonttools==4.62.1
+frozendict @ file:///croot/frozendict_1713194832637/work
+fsspec==2024.10.0
+future==1.0.0
+h11==0.16.0
+hf-xet==1.4.3
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.10.2
+hydra-core==1.3.2
+idna @ file:///croot/idna_1714398848350/work
+ImageIO==2.37.3
+imageio-ffmpeg==0.6.0
+importlib_metadata==9.0.0
+iopath==0.1.10
+Jinja2==3.1.4
+jsonpatch @ file:///croot/jsonpatch_1714483231291/work
+jsonpointer==2.1
+kiwisolver==1.5.0
+lazy-loader==0.5
+libmambapy @ file:///croot/mamba-split_1725563367192/work/libmambapy
+markdown-it-py==4.0.0
+MarkupSafe==3.0.2
+matplotlib==3.10.8
+mdurl==0.1.2
+menuinst @ file:///croot/menuinst_1723567589013/work
+modelscope==1.35.4
+mpmath==1.3.0
+networkx==3.4.2
+numpy==2.1.3
+nvidia-cublas-cu12==12.4.5.8
+nvidia-cuda-cupti-cu12==12.4.127
+nvidia-cuda-nvrtc-cu12==12.4.127
+nvidia-cuda-runtime-cu12==12.4.127
+nvidia-cudnn-cu12==9.1.0.70
+nvidia-cufft-cu12==11.2.1.3
+nvidia-curand-cu12==10.3.5.147
+nvidia-cusolver-cu12==11.6.1.9
+nvidia-cusparse-cu12==12.3.1.170
+nvidia-cusparselt-cu12==0.6.2
+nvidia-nccl-cu12==2.21.5
+nvidia-nvjitlink-cu12==12.4.127
+nvidia-nvtx-cu12==12.4.127
+omegaconf==2.3.0
+opencv-python==4.13.0.92
+packaging @ file:///croot/packaging_1720101850331/work
+pillow==11.0.0
+platformdirs @ file:///work/perseverance-python-buildout/croot/platformdirs_1701732573265/work
+pluggy @ file:///work/perseverance-python-buildout/croot/pluggy_1698805497733/work
+polars==1.39.3
+polars-runtime-32==1.39.3
+portalocker==3.2.0
+psutil==7.2.2
+pycosat @ file:///croot/pycosat_1714510623388/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+Pygments==2.20.0
+pyparsing==3.3.2
+PySocks @ file:///work/perseverance-python-buildout/croot/pysocks_1698845478203/work
+python-dateutil==2.9.0.post0
+PyYAML==6.0.3
+regex==2026.4.4
+requests @ file:///croot/requests_1721410876868/work
+rich==15.0.0
+ruamel.yaml @ file:///croot/ruamel.yaml_1727980156079/work
+ruamel.yaml.clib @ file:///croot/ruamel.yaml.clib_1727769819935/work
+safetensors==0.7.0
+-e git+https://github.com/GreeWang/CVp3.git@e39629ea9faecf8b548d0054b546df63b0c5b164#egg=SAM_2&subdirectory=sam2
+scikit-image==0.26.0
+scipy==1.17.1
+setuptools==75.1.0
+shellingham==1.5.4
+six==1.17.0
+sympy==1.13.1
+tifffile==2026.4.11
+timm==1.0.26
+tokenizers==0.22.2
+torch==2.6.0+cu124
+torchaudio==2.6.0+cu124
+torchvision==0.21.0+cu124
+tqdm @ file:///croot/tqdm_1724853939799/work
+transformers==5.5.4
+triton==3.2.0
+truststore @ file:///work/perseverance-python-buildout/croot/truststore_1701735771625/work
+typer==0.24.1
+typing_extensions==4.12.2
+ultralytics==8.4.37
+ultralytics-thop==2.0.18
+urllib3 @ file:///croot/urllib3_1727769808118/work
+wheel==0.44.0
+yapf==0.43.0
+zipp==3.23.1
+zstandard @ file:///croot/zstandard_1728569189425/work

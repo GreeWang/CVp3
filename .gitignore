@@ -39,9 +39,9 @@ checkpoints/
 *.safetensors
 
 # Local cloned third-party repositories
-# ProPainter/ (Uncommented: Uploading as codebase per requirement for p1/p2/p3 reproducing)
-# FreeInpaint-main/
-# sam2/
+ProPainter/
+FreeInpaint-main/
+sam2/
 
 # Notebook checkpoints
 .ipynb_checkpoints/
